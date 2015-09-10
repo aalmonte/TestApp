@@ -10,6 +10,8 @@ release {
 
 allprojects {
     group 'test'
+
+    apply plugin: 'idea'
 }
 
 subprojects {
@@ -19,7 +21,6 @@ subprojects {
     }
 
     apply plugin: 'java'
-    apply plugin: 'idea'
 
     sourceCompatibility = 1.7
 
