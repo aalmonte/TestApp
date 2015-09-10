@@ -1,0 +1,35 @@
+subprojects {
+
+    group 'test'
+    version '1.0.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    sourceCompatibility = 1.7
+
+}
+
+project (':common') {
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+    }
+}
+
+project (':webapp') {
+    apply plugin: 'war'
+
+    dependencies {
+        compile project(':common')
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+    }
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.6'
+}
