@@ -1,7 +1,18 @@
-subprojects {
+plugins {
+    id 'net.researchgate.release' version '2.2.2'
+}
 
+release {
+    git {
+        requireBranch = ''
+    }
+}
+
+allprojects {
     group 'test'
-    version '1.0.0-SNAPSHOT'
+}
+
+subprojects {
 
     repositories {
         mavenCentral()
