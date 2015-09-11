@@ -3,6 +3,7 @@ plugins {
 }
 
 release {
+
     git {
         requireBranch = ''
     }
@@ -24,6 +25,11 @@ subprojects {
 
     sourceCompatibility = 1.7
 
+    task upload(type: Exec) {
+        executable "aws"
+        args "--help", "${name}-${version}"
+    }
+
 }
 
 project (':common') {
@@ -39,9 +45,17 @@ project (':webapp') {
         compile project(':common')
         testCompile group: 'junit', name: 'junit', version: '4.11'
     }
+
+    task uploadWebAppVersion(type: Exec) {
+        executable "aws"
+        args "--help", "${name}-${version}"
+    }
+
+    afterReleaseBuild.dependsOn uploadWebAppVersion
 }
 
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.6'
 }
+
