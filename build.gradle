@@ -2,7 +2,17 @@ plugins {
     id 'net.researchgate.release' version '2.2.2'
 }
 
+ext {
+    app_name = 'webapp-test'
+    s3_bucket = 'elasticbeanstalk-us-east-1-700489516080'
+    s3_key = "${app_name}/${app_name}-${version}.war"
+}
+
 release {
+
+    failOnCommitNeeded = false
+    failOnPublishNeeded = false
+    failOnUpdateNeeded = false
 
     git {
         requireBranch = ''
@@ -46,12 +56,27 @@ project (':webapp') {
         testCompile group: 'junit', name: 'junit', version: '4.11'
     }
 
+    task printVersion() {
+        println "S3 Bucket: ${s3_bucket}"
+        println "S3 Key: ${s3_key}"
+        println "App name: ${app_name}"
+        println "Version: ${version}"
+    }
+//aws s3 cp ./build/libs/webapp-1.0.1.war s3://elasticbeanstalk-us-east-1-700489516080/webapp-test/
     task uploadWebAppVersion(type: Exec) {
         executable "aws"
-        args "--help", "${name}-${version}"
+        args "s3", "cp", "./build/libs/${project.name}-${version}.war", "s3://${s3_bucket}/${app_name}/${app_name}-${version}.war"
     }
 
-    afterReleaseBuild.dependsOn uploadWebAppVersion
+    // aws elasticbeanstalk create-application-version --application-name webapp-test --version-label 1.0.1 --source-bundle S3Bucket=elasticbeanstalk-us-east-1-700489516080,S3Key=webapp-test/webapp-1.0.1.war
+    task createWebAppVersion(type: Exec) {
+        executable "aws"
+        args "elasticbeanstalk", "create-application-version", "--application-name", "${app_name}", "--version-label", "${version}", "--source-bundle", "S3Bucket=${s3_bucket},S3Key=${s3_key}"
+    }
+
+    uploadWebAppVersion.dependsOn printVersion
+    createWebAppVersion.dependsOn uploadWebAppVersion
+    afterReleaseBuild.dependsOn createWebAppVersion
 }
 
 
