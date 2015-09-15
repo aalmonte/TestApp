@@ -1,13 +1,3 @@
-.classpath
-.gradle/
-.project
-.settings/
-bin/
-build/
-.idea/
-*.iml
-*.ipr
-*.iws
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
